@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrición · Juan Francisco</title>
+<style>
+  :root {
+    --bg: #F7F4EF;
+    --card: #FFFFFF;
+    --green: #2E6B4F;
+    --green-light: #E8F2EC;
+    --blue: #2E5F8A;
+    --blue-light: #E6EFF7;
+    --purple: #7A4A9E;
+    --purple-light: #F0EAF7;
+    --orange: #C4753A;
+    --orange-light: #FAF0E6;
+    --text: #1A1A1A;
+    --text-muted: #6B6B6B;
+    --border: #E8E4DF;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(247,244,239,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    gap: 12px;
+  }
+
+  .nav-logo {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+
+  .day-switcher {
+    display: flex;
+    gap: 6px;
+    background: var(--border);
+    border-radius: 50px;
+    padding: 3px;
+  }
+
+  .day-btn {
+    padding: 6px 14px;
+    border-radius: 50px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all .2s;
+  }
+
+  .day-btn.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+
+  .day-btn.gym.active { color: var(--green); }
+  .day-btn.run.active { color: var(--blue); }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 100px;
+  }
+
+  .header-card {
+    background: var(--green);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    margin-bottom: 20px;
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .profile-name {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+
+  .profile-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .profile-stat {
+    background: rgba(255,255,255,.15);
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .profile-activities {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    opacity: .9;
+  }
+
+  .profile-goals {
+    background: rgba(255,255,255,.12);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+  }
+
+  .profile-goals-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: .7;
+    margin-bottom: 4px;
+  }
+
+  .profile-goal-item {
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+  }
+
+  .day-banner {
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .day-banner.gym { background: var(--green-light); color: var(--green); display: flex; }
+  .day-banner.run { background: var(--blue-light); color: var(--blue); display: none; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .summary-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .summary-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .summary-macros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .summary-macros { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .summary-macro {
+    text-align: center;
+    padding: 14px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+
+  .summary-macro-value {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-macro-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  .summary-macro.kcal .summary-macro-value { color: var(--orange); }
+  .summary-macro.prot .summary-macro-value { color: var(--green); }
+  .summary-macro.hc .summary-macro-value { color: var(--blue); }
+  .summary-macro.fat .summary-macro-value { color: var(--purple); }
+
+  .summary-extra {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+
+  @media (max-width: 500px) {
+    .summary-extra { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .summary-extra-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .summary-extra-item .icon { font-size: 18px; }
+
+  .progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .progress-label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .progress-value {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .progress-track {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width .8s cubic-bezier(.4,0,.2,1);
+  }
+
+  .progress-item.prot .progress-fill { background: var(--green); }
+  .progress-item.hc .progress-fill { background: var(--blue); }
+  .progress-item.fat .progress-fill { background: var(--purple); }
+  .progress-item.kcal .progress-fill { background: var(--orange); }
+
+  .progress-range {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .meals-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 42px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  @media (max-width: 500px) {
+    .timeline::before { left: 30px; }
+  }
+
+  .meal-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .meal-time-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+    padding-top: 18px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 500px) {
+    .meal-time-col { min-width: 44px; }
+  }
+
+  .meal-time {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: .3px;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .meal-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: all .2s;
+  }
+
+  .meal-dot.done {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .meal-card {
+    flex: 1;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+
+  .meal-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.06);
+  }
+
+  .meal-card.done-card {
+    opacity: .65;
+  }
+
+  .meal-header {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .meal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .meal-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .meal-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .meal-kcal {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  .meal-macros-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 50px;
+  }
+
+  .pill.prot { background: var(--green-light); color: var(--green); }
+  .pill.hc { background: var(--blue-light); color: var(--blue); }
+  .pill.fat { background: var(--purple-light); color: var(--purple); }
+
+  .meal-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .btn-check {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all .2s;
+    color: transparent;
+  }
+
+  .btn-check.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .btn-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all .2s;
+    color: var(--text-muted);
+  }
+
+  .btn-toggle.open {
+    background: var(--text);
+    color: white;
+    transform: rotate(180deg);
+  }
+
+  .meal-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .meal-body.open { display: block; }
+
+  .meal-foods {
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .food-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  .food-name { color: var(--text); font-weight: 500; }
+  .food-amount { color: var(--text-muted); font-size: 13px; font-weight: 600; }
+
+  .meal-tabs {
+    display: flex;
+    border-top: 1px solid var(--border);
+  }
+
+  .meal-tab {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all .15s;
+    border-bottom: 2px solid transparent;
+  }
+
+  .meal-tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    background: var(--green-light);
+  }
+
+  .meal-tab-content {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .meal-tab-content.active { display: block; }
+
+  .sub-group { margin-bottom: 12px; }
+
+  .sub-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .sub-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sub-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s;
+  }
+
+  .sub-option:hover { border-color: var(--border); background: var(--card); }
+  .sub-option.selected { background: var(--green-light); border-color: var(--green); }
+  .sub-option.selected .eq { color: var(--green); font-weight: 700; }
+
+  .sub-option .eq {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .tips-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tip-item {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .tip-item::before {
+    content: '→';
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .hydration-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 500px) {
+    .hydration-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .hydration-item {
+    background: var(--blue-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .hydration-value {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: -0.3px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hydration-label {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+    opacity: .7;
+  }
+
+  /* SHOPPING LIST */
+  .shopping-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    border: 2px solid var(--green);
+    margin-bottom: 20px;
+  }
+
+  .shopping-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .shopping-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .shopping-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .shopping-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 400px) {
+    .shopping-grid { grid-template-columns: 1fr; }
+  }
+
+  .shopping-cat {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .shopping-cat-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--green);
+  }
+
+  .shopping-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: all .2s;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+
+  .shopping-item:hover {
+    background: white;
+  }
+
+  .shopping-item.checked {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    opacity: 0.7;
+    background: var(--green-light);
+  }
+
+  .shopping-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .shopping-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all .2s;
+    background: white;
+  }
+
+  .shopping-item.checked .shopping-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .shopping-amount {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    background: var(--orange-light);
+    padding: 2px 8px;
+    border-radius: 50px;
+    white-space: nowrap;
+  }
+
+  .shopping-item.checked .shopping-amount {
+    opacity: 0.5;
+  }
+
+  .shopping-info {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--green-light);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--green);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .shopping-total {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .shopping-total-label {
+    color: var(--text-muted);
+  }
+
+  .shopping-total-value {
+    color: var(--green);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .section { margin-bottom: 20px; }
+
+  .reset-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .reset-btn:hover {
+    background: var(--card);
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">💪 JF Nutrición</div>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <div class="day-switcher">
+        <button class="day-btn gym active" onclick="setDay('gym')">🏋️ Gimnasio</button>
+        <button class="day-btn run" onclick="setDay('run')">🏃 Carrera</button>
+      </div>
+      <button class="reset-btn" onclick="resetDay()" title="Reiniciar progreso del día">↺ Reiniciar</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HEADER -->
+  <div class="header-card section">
+    <div>
+      <div class="profile-name">Juan Francisco</div>
+      <div class="profile-stats">
+        <span class="profile-stat">75 kg</span>
+        <span class="profile-stat">⚡ Alta actividad</span>
+      </div>
+      <div class="profile-activities">
+        <div>🏋️ 5 días gimnasio</div>
+        <div>🏃 2 días carrera</div>
+      </div>
+    </div>
+    <div class="profile-goals">
+      <div class="profile-goals-title">Objetivos</div>
+      <div class="profile-goal-item">💪 Ganar masa muscular</div>
+      <div class="profile-goal-item">📉 Bajo % grasa</div>
+      <div class="profile-goal-item">🚀 Mejorar rendimiento</div>
+    </div>
+  </div>
+
+  <!-- DAY BANNER -->
+  <div class="day-banner gym" id="gymBanner">🏋️ Día de gimnasio · 130 g arroz comida · merienda normal</div>
+  <div class="day-banner run" id="runBanner">🏃 Día de carrera · 150 g arroz + zumo + fruta extra · +250 kcal</div>
+
+  <!-- RESUMEN -->
+  <div class="summary-card section">
+    <div class="summary-title">📊 Resumen del día</div>
+    <div class="summary-macros">
+      <div class="summary-macro kcal">
+        <div class="summary-macro-value" id="totalKcal">0</div>
+        <div class="summary-macro-label">kcal</div>
+      </div>
+      <div class="summary-macro prot">
+        <div class="summary-macro-value" id="totalProt">0</div>
+        <div class="summary-macro-label">g proteína</div>
+      </div>
+      <div class="summary-macro hc">
+        <div class="summary-macro-value" id="totalHC">0</div>
+        <div class="summary-macro-label">g HC</div>
+      </div>
+      <div class="summary-macro fat">
+        <div class="summary-macro-value" id="totalFat">0</div>
+        <div class="summary-macro-label">g grasa</div>
+      </div>
+    </div>
+    <div class="summary-extra">
+      <div class="summary-extra-item"><span class="icon">💧</span> 3 L agua</div>
+      <div class="summary-extra-item"><span class="icon">😴</span> 8 h sueño</div>
+      <div class="summary-extra-item"><span class="icon">🍌</span> 3 piezas fruta</div>
+      <div class="summary-extra-item"><span class="icon">🥦</span> 300 g verduras</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BARS -->
+  <div class="card section">
+    <div class="card-title">📈 Progreso diario</div>
+    <div class="progress-list">
+      <div class="progress-item kcal">
+        <div class="progress-header">
+          <span class="progress-label">🔥 Calorías</span>
+          <span class="progress-value"><span id="pKcal">0</span> / 3000 kcal</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="barKcal" style="width:0%"></div></div>
+        <div class="progress-range">Rango: 2900 – 3100 kcal</div>
+      </div>
+      <div class="progress-item prot">
+        <div class="progress-header">
+          <span class="progress-label">🍗 Proteína</span>
+          <span class="progress-value"><span id="pProt">0</span> / 150 g</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="barProt" style="width:0%"></div></div>
+        <div class="progress-range">Objetivo: 150 g · Rango: 140 – 160 g</div>
+      </div>
+      <div class="progress-item hc">
+        <div class="progress-header">
+          <span class="progress-label">🍚 Carbohidratos</span>
+          <span class="progress-value"><span id="pHC">0</span> / 380 g</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="barHC" style="width:0%"></div></div>
+        <div class="progress-range">Objetivo: 380 g · Rango: 350 – 400 g</div>
+      </div>
+      <div class="progress-item fat">
+        <div class="progress-header">
+          <span class="progress-label">🥑 Grasas</span>
+          <span class="progress-value"><span id="pFat">0</span> / 80 g</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="barFat" style="width:0%"></div></div>
+        <div class="progress-range">Objetivo: 80 g · Rango: 75 – 90 g</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEALS -->
+  <div class="section">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div class="meals-title">🍽️ Plan de comidas</div>
+      <span style="font-size:12px; color:var(--text-muted);" id="completedCount">0/6 completadas</span>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- HYDRATION -->
+  <div class="card section">
+    <div class="card-title">💧 Hidratación</div>
+    <div class="hydration-grid">
+      <div class="hydration-item">
+        <div class="hydration-value">500 ml</div>
+        <div class="hydration-label">Antes entreno</div>
+      </div>
+      <div class="hydration-item">
+        <div class="hydration-value">500–1000</div>
+        <div class="hydration-label">Durante</div>
+      </div>
+      <div class="hydration-item">
+        <div class="hydration-value">500 ml</div>
+        <div class="hydration-label">Después</div>
+      </div>
+      <div class="hydration-item">
+        <div class="hydration-value">3 L</div>
+        <div class="hydration-label">Objetivo diario</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOPPING LIST -->
+  <div class="shopping-section" id="shoppingSection">
+    <div class="shopping-title">🛒 Lista de la compra semanal</div>
+    <div class="shopping-subtitle">Cantidades exactas para 7 días (5 gym 🏋️ + 2 carrera 🏃)</div>
+    <div class="shopping-grid" id="shoppingGrid"></div>
+    <div class="shopping-total">
+      <span class="shopping-total-label">📦 Progreso compra:</span>
+      <span class="shopping-total-value" id="totalItems">0/30</span>
+    </div>
+    <div class="shopping-info">
+      ✅ Haz clic para marcar como comprado • Cantidades calculadas según tu plan exacto
+    </div>
+  </div>
+
+</main>
+
+<script>
+window.addEventListener('load', function() {
+  initApp();
+});
+
+// Lista de compra CORREGIDA con cantidades exactas
+const SHOPPING = {
+  '🍗 Proteínas': [
+    { name: 'Pechuga de pollo', amount: '1.26 kg', detail: '180g × 7 días' },
+    { name: 'Pavo lonchas', amount: '700 g', detail: '100g × 7 días (merienda)' },
+    { name: 'Carne ternera/cerdo', amount: '1.26 kg', detail: '180g × 7 días (cena)' },
+    { name: 'Huevos', amount: '12 uds', detail: 'Para variar proteínas' },
+    { name: 'Salmón fresco', amount: '400 g', detail: '2 veces/semana (170-200g)' },
+    { name: 'Merluza/pescado', amount: '400 g', detail: '2 veces/semana (200g)' },
+    { name: 'Atún latas', amount: '4 latas', detail: 'Para emergencias/variar' },
+    { name: 'Tofu', amount: '400 g', detail: 'Opcional (200g × 2)' },
+  ],
+  '🥛 Lácteos': [
+    { name: 'Yogur griego natural', amount: '1.75 kg', detail: '250g × 7 días' },
+    { name: 'Queso fresco batido', amount: '1.75 kg', detail: '250g × 7 días' },
+    { name: 'Leche entera', amount: '1.75 L', detail: '250ml × 7 días' },
+  ],
+  '🍚 Carbohidratos': [
+    { name: 'Arroz blanco', amount: '950 g', detail: '(130g×5)+(150g×2)' },
+    { name: 'Pasta', amount: '1 kg', detail: 'Para variar del arroz' },
+    { name: 'Patatas', amount: '1.4 kg', detail: '200g × 7 días' },
+    { name: 'Avena copos', amount: '560 g', detail: '80g × 7 días' },
+    { name: 'Pan integral', amount: '1.5 kg', detail: '~210g/día × 7' },
+    { name: 'Quinoa', amount: '500 g', detail: 'Para variar (opcional)' },
+  ],
+  '🍎 Frutas': [
